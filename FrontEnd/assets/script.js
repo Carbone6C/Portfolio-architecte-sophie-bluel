@@ -28,15 +28,19 @@ async function afficherWorks(works) {
 }
 
 async function afficherFilters() {
+    // Tableau récupérant la liste des categories sur le backend :
     let reponseCategories = await fetch('http://localhost:5678/api/categories');
     let categories = await reponseCategories.json();
+
     // Création de la div du DOM qui accueillera les filtres
+    
     const portofoliotitle = document.querySelector("#portfolio h2");
     const allFilter = document.createElement("div");
     allFilter.className = "filters"; 
     portofoliotitle.after(allFilter);
 
      // Intégration d'un bouton affichant tous les travaux
+
     const toutFilter = document.createElement("button");
     toutFilter.className = "filterButton";
     toutFilter.innerText = "Tous";
@@ -70,7 +74,9 @@ async function afficherFilters() {
         filter.innerText = filterCat[i];
 
         // On rattache les boutons à la div de tous filtres
+
         allFilter.appendChild(filter);
+
         // Création des Listeners pour ces boutons
 
         filter.addEventListener("click", function () {
@@ -80,6 +86,7 @@ async function afficherFilters() {
         })
 
         // on supprime le contenu HTML de la gallery pour l'actualiser avec une nouvelle variable dans notre fonction : filWork
+
         document.querySelector(".gallery").innerHTML = "";
         afficherWorks(filWork)
         })
