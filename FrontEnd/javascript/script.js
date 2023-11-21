@@ -3,7 +3,7 @@
 let reponseWorks = await fetch('http://localhost:5678/api/works');
 let works = await reponseWorks.json();
 
-async function afficherWorks(works) {
+function afficherWorks(works) {
 
     // Récupération de l'élément du DOM qui accueillera les images
     const gallery = document.querySelector(".gallery");
@@ -27,10 +27,7 @@ async function afficherWorks(works) {
     }
 }
 
-async function afficherFilters() {
-    // Tableau récupérant la liste des categories sur le backend :
-    let reponseCategories = await fetch('http://localhost:5678/api/categories');
-    let categories = await reponseCategories.json();
+function afficherTous() {
 
     // Création de la div du DOM qui accueillera les filtres
     
@@ -39,7 +36,7 @@ async function afficherFilters() {
     allFilter.className = "filters"; 
     portofoliotitle.after(allFilter);
 
-     // Intégration d'un bouton affichant tous les travaux
+    // Intégration d'un bouton affichant tous les travaux
 
     const toutFilter = document.createElement("button");
     toutFilter.className = "filterButton";
@@ -54,6 +51,10 @@ async function afficherFilters() {
     document.querySelector('.gallery').innerHTML = "";
     afficherWorks(works);
     });
+}
+
+function creerFiltre(){
+
 
     // Création d'un Array pour lister les catégories
 
@@ -64,10 +65,13 @@ async function afficherFilters() {
       if (!filterCat.includes(work.category.name)) {
         filterCat.push(work.category.name);
       };
-    }
+    } 
+
     // Création des boutons dédiées aux filtres, attributions de classes et ID pour ces boutons
 
-    for (let i = 0; i < categories.length; i++) {
+    const allFilter = document.querySelector(".filters")
+
+    for (let i = 0; i < filterCat.length; i++) {
         const filter = document.createElement("button");
         filter.className = "filterButton";
         filter.id = `${filterCat[i]}`;
@@ -75,29 +79,29 @@ async function afficherFilters() {
 
         // On rattache les boutons à la div de tous filtres
 
+        
         allFilter.appendChild(filter);
 
         // Création des Listeners pour ces boutons
 
         filter.addEventListener("click", function () {
-        const btnId = this.id;
-        const filWork = works.filter(function (work) {
-            return work.category.name == btnId;
-        })
+            const btnId = this.id;
+            const filWork = works.filter(function (work) {
+                return work.category.name == btnId;
+            })
 
-        // on supprime le contenu HTML de la gallery pour l'actualiser avec une nouvelle variable dans notre fonction : filWork
+            // on supprime le contenu HTML de la gallery pour l'actualiser avec une nouvelle variable dans notre fonction : filWork
 
-        document.querySelector(".gallery").innerHTML = "";
-        afficherWorks(filWork)
-        })
+            document.querySelector(".gallery").innerHTML = "";
+            afficherWorks(filWork)
+            
+            })
     }
 }
 
-
-
 afficherWorks(works);
-afficherFilters(works)
-
+afficherTous();
+creerFiltre(works)
 
 
 
