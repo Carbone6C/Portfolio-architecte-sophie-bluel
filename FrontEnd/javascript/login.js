@@ -30,7 +30,7 @@ async function userAuthentification (event) {
         // Stockage du token
         .then((data) => {
             const token = data.token;
-            sessionStorage.setItem("token", token);
+            localStorage.setItem("token", token);
         });
 }
 

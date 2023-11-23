@@ -27,6 +27,8 @@ function afficherWorks(works) {
     }
 }
 
+// Function pour afficher le bouton Tous
+
 function afficherTous() {
 
     // Création de la div du DOM qui accueillera les filtres
@@ -38,23 +40,49 @@ function afficherTous() {
 
     // Intégration d'un bouton affichant tous les travaux
 
-    const toutFilter = document.createElement("button");
-    toutFilter.className = "filterButton";
-    toutFilter.innerText = "Tous";
-    toutFilter.id = "toutFilter";
-    allFilter.appendChild(toutFilter);
+    const tousFilter = document.createElement("button");
+    tousFilter.className = "filterButton";
+    tousFilter.innerText = "Tous";
+    tousFilter.id = "toutFilter";
+    allFilter.appendChild(tousFilter);
+
+    setTousFilterBackground ()
     
 
     //Ajout du listener pour le button Tous
 
-    toutFilter.addEventListener("click", function () {
-    document.querySelector('.gallery').innerHTML = "";
-    afficherWorks(works);
+    tousFilter.addEventListener("click", function () {
+        refreshFilters()
+        afficherWorks(works)
+        setTousFilterBackground ()
     });
 }
 
-function creerFiltre(){
+// Function pour mettre a jour les filtrages
 
+function refreshFilters () {
+    document.querySelector('.gallery').innerHTML = "";
+}
+
+// Function pour le backgroud du bouton Tous
+
+function setTousFilterBackground () {
+    const firstFilter = document.querySelector('.filters').firstChild;
+    firstFilter.classList.add('active');
+};
+
+// Function pour le backgroud des autres boutons filtres
+
+function changeFilterBackground (filter, filterIndex) {
+    filter.forEach((filter, index) => {
+        filter.classList.remove('active');
+        if (filterIndex === index) {
+        filter.classList.add('active');
+        }
+    });
+};
+
+function creerFiltre(){
 
     // Création d'un Array pour lister les catégories
 
@@ -87,17 +115,16 @@ function creerFiltre(){
         filter.addEventListener("click", function () {
             const btnId = this.id;
             const filWork = works.filter(function (work) {
-                return work.category.name == btnId;
+            return work.category.name == btnId;
             })
-
-            // on supprime le contenu HTML de la gallery pour l'actualiser avec une nouvelle variable dans notre fonction : filWork
-
-            document.querySelector(".gallery").innerHTML = "";
+            refreshFilters()
             afficherWorks(filWork)
-            
-            })
+            changeFilterBackground (filter, btnId)    
+        })
     }
 }
+
+
 
 afficherWorks(works);
 afficherTous();

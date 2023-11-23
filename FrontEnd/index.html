@@ -10,66 +10,106 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type="module" src="./javascript/script.js"></script>
+	<script type="module" src="./javascript/modale.js"></script>
 	<script src="https://kit.fontawesome.com/07ef78745e.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="editMode">
-	<i class="fa-solid fa-pen-to-square"></i>
-	Mode édition
-</div>
-<header>
-	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-	<nav>
-		<ul>
-			<li><a href="index.html">projets</a></li>
-			<li>contact</li>
-			<li><a href="login.html">login</a> </li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-		</ul>
-	</nav>
-</header>
-<main>
-	<section id="introduction">
-		<figure>
-			<img src="./assets/images/sophie-bluel.png" alt="">
-		</figure>
-		<article>
-			<h2>Designer d'espace</h2>
-			<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
-			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
-			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
-		</article>
-	</section>
-	<section id="portfolio">
-		<h2>Mes Projets</h2>
-		<div>
-			<i class="fa-solid fa-pen-to-square"></i>
-			modifier
-		</div>
-		<div class="gallery">
-		</div>
-	</section>
-	<section id="contact">
-		<h2>Contact</h2>
-		<p>Vous avez un projet ? Discutons-en !</p>
-		<form action="#" method="post">
-			<label for="name">Nom</label>
-			<input type="text" name="name" id="name">
-			<label for="email">Email</label>
-			<input type="email" name="email" id="email">
-			<label for="message">Message</label>
-			<textarea name="message" id="message" cols="30" rows="10"></textarea>
-			<input type="submit" value="Envoyer">
-		</form>
-	</section>
-</main>
+<aside>
+	<div class="editMode">
+		<i class="fa-solid fa-pen-to-square"></i>
+		<p>Mode édition</p>
+	</div>
+</aside>
+<aside id="modal1" class="modal modal1" aria-hidden="true" role="dialog" >
+	<div class="modal-wrapper js-modal-stop" >
+		<p>Galerie Photo</p>
+		<div class="pictureModifier">
 
-<footer>
-	<nav>
-		<ul>
-			<li>Mentions Légales</li>
-		</ul>
-	</nav>
-</footer>
+		</div>
+		<input class="addPic" type="submit" value="Ajouter une photo">
+		<i class="fa-solid fa-xmark js-modal-close"></i>
+	</div>
+</aside>
+<aside id="modal2" class="modal modal2" aria-hidden="true" role="dialog" >
+	<div class="modal-wrapper js-modal-stop">
+		<p>Ajout photo</p>
+		<form class="photoForm" action="" method="POST">
+			<div class="importPhoto">
+				<i class="fa-regular fa-image"></i>
+				<label for="addPhoto">+ Ajouter photo</label>
+				<input type="file" id="addPhoto">
+				<p>jpg, png: 4mo max</p>
+			</div>
+			<div class="photoInfo">
+				<label for="photoTitle">Titre</label><br>
+				<input type="text" id="photoTitle">
+				<label for="photoCat">Catégorie</label><br>
+				<input list="categories" id="photoCat">
+				<datalist id="categories">	
+				</datalist>
+			</div>
+			<input type="submit" value="Valider" disabled>
+		</form>
+		<i class="fas fa-arrow-left"></i>
+		<i class="fa-solid fa-xmark js-modal-close"></i>
+	</div>
+</aside>
+<div class="main-container">
+	<header>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+		<nav>
+			<ul>
+				<li><a href="index.html">projets</a></li>
+				<li>contact</li>
+				<li><a class="logStatus" href="login.html">login</a> </li>
+				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			</ul>
+		</nav>
+	</header>
+	<main>
+		<section id="introduction">
+			<figure>
+				<img src="./assets/images/sophie-bluel.png" alt="">
+			</figure>
+			<article>
+				<h2>Designer d'espace</h2>
+				<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
+				<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
+				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
+			</article>
+		</section>
+		<section id="portfolio">
+			<h2>Mes Projets
+				<a href="#modal1" class="js-modal editButton">
+					<i class="fa-solid fa-pen-to-square"></i>
+					modifier
+				</a>
+			</h2>
+			<div class="gallery">
+			</div>
+		</section>
+		<section id="contact">
+			<h2>Contact</h2>
+			<p>Vous avez un projet ? Discutons-en !</p>
+			<form action="#" method="post">
+				<label for="name">Nom</label>
+				<input type="text" name="name" id="name">
+				<label for="email">Email</label>
+				<input type="email" name="email" id="email">
+				<label for="message">Message</label>
+				<textarea name="message" id="message" cols="30" rows="10"></textarea>
+				<input type="submit" value="Envoyer">
+			</form>
+		</section>
+	</main>
+	
+	<footer>
+		<nav>
+			<ul>
+				<li>Mentions Légales</li>
+			</ul>
+		</nav>
+	</footer>
+</div>
 </body>
 </html>

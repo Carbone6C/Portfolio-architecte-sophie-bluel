@@ -47,12 +47,13 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
-body {
+.main-container {
 	max-width: 1140px;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -198,7 +199,7 @@ margin: auto;
 	background-color: #1D6154;
 }
 
-.filters button:active {
+.filters .active {
 	color: white;
 	background-color: #1D6154;
 }
@@ -279,10 +280,10 @@ footer nav ul {
 }
 
 .editMode {
-	position: absolute;
+	position: relative;
 	top: 0;
 	left: 0;
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 	background-color: black;
@@ -295,4 +296,182 @@ footer nav ul {
 
 .editMode i {
 	margin-right: 5px;
+}
+
+#portfolio h2 {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 10px;
+}
+
+#portfolio a {
+	text-decoration: none;
+}
+
+
+.editButton {
+	color: black;
+	font-weight: 400;
+	font-size: 14px;
+	font-family: Work Sans;
+	display: none;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+}
+
+
+.modal1 {
+	position: fixed;
+	display: none;
+	align-items: center;
+	justify-content: center;	
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.8);
+}
+
+.modal1 input[type="submit"] {
+	height: 36px;
+	width: 237px;
+}
+
+.modal2 {
+	position: fixed;
+	display: none;
+	align-items: center;
+	justify-content: center;	
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.8);
+}
+
+.modal-wrapper {
+	width: 630px;
+	border-radius: 10px;
+	max-width: calc(100vh-20px);
+	max-height: calc(100vh-20px);
+	padding: 20px;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.modal-wrapper p {
+	color: #000000;
+	font-size: 26px;
+	font-weight: 400;
+	font-family: Work Sans;
+	margin-bottom: 30px;
+}
+
+.modal-wrapper .pictureModifier {
+	border-bottom: 1px solid #B3B3B3;
+	margin-bottom: 30px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 10px;
+	width: 450px;
+}
+
+.modal-wrapper img {
+	height: 118.95px;
+	width: 79.13px;
+}
+
+.modal-wrapper .fa-xmark {
+	position: absolute;
+	top: 280px;
+	right: 440px;
+}
+
+.modal-wrapper .importPhoto {
+	color: #B9C5CC;
+	background-color: #E8F1F6;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: 420px;
+}
+
+.importPhoto {
+	margin-bottom: 20px;
+}
+
+.importPhoto label {
+	font-family: Work Sans;
+	font-size: 14px;
+	font-weight: 500;
+	background-color: #CBD6DC;
+	padding: 10px 20px;
+	border-radius: 50px;
+	color: #306685;
+	margin-bottom: 10px;
+}
+
+.importPhoto input {
+	display: none;
+}
+
+.importPhoto i {
+	font-size: 59.62px;
+	margin: 10px 0;
+}
+
+.importPhoto p {
+	font-size: 10px;
+	font-style: Work Sans;
+	font-weight: 400;
+}
+
+.photoInfo {
+	width: 420px;
+}
+
+.photoInfo label {
+	font-size: 14px;
+	font-weight: 500;
+	font-family: Work Sans;
+}
+
+.photoInfo input {
+	width: 100%;
+	height: 51px;
+	box-shadow: 0px 4px 14px 0px #00000017;
+	border: none;
+	margin: 15px 0;
+}
+
+.photoForm {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.photoForm input[type="submit"] {
+	height: 36px;
+	width: 237px;
+}
+
+.photoForm input[type="submit"]:disabled {
+	background-color: #A7A7A7;
+}
+
+.pictureModifier i {
+	color: white;
+	background-color: #000000;
+	padding: 2px 3px 3px 2px;
+	position: relative;
+	bottom: 80%;
+	left: 75%;
+	font-size: 9px;
+	margin-right: -14px;
 }
