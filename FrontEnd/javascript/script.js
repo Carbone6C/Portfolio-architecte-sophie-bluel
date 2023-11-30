@@ -27,7 +27,7 @@ function afficherWorks(works) {
     }
 }
 
-// Function pour afficher le bouton Tous
+// Fonction pour afficher le bouton Tous
 
 function afficherTous() {
 
@@ -58,29 +58,22 @@ function afficherTous() {
     });
 }
 
-// Function pour mettre a jour les filtrages
+// Fonction pour mettre a jour les filtrages
 
 function refreshFilters () {
     document.querySelector('.gallery').innerHTML = "";
 }
 
-// Function pour le backgroud du bouton Tous
+// Fonction pour le backgroud du bouton Tous
 
 function setTousFilterBackground () {
     const firstFilter = document.querySelector('.filters').firstChild;
     firstFilter.classList.add('active');
 };
 
-// Function pour le backgroud des autres boutons filtres
+// Fonction pour le backgroud des autres boutons filtres
 
-function changeFilterBackground (filter, filterIndex) {
-    filter.forEach((filter, index) => {
-        filter.classList.remove('active');
-        if (filterIndex === index) {
-        filter.classList.add('active');
-        }
-    });
-};
+
 
 function creerFiltre(){
 
@@ -119,17 +112,28 @@ function creerFiltre(){
             })
             refreshFilters()
             afficherWorks(filWork)
-            changeFilterBackground (filter, btnId)    
+              
         })
     }
 }
 
+function changeFilterBackground () {
+    let allFilters = document.querySelectorAll('.filterButton');
+    allFilters.forEach((filter) => {
+        filter.addEventListener('click', function() {
+            allFilters.forEach((filter) => {
+                filter.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+}
 
 
 afficherWorks(works);
 afficherTous();
 creerFiltre(works)
-
+changeFilterBackground()  
 
 
 

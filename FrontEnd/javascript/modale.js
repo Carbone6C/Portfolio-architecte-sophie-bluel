@@ -1,21 +1,14 @@
 let reponseWorks = await fetch('http://localhost:5678/api/works');
 let works = await reponseWorks.json();
-const editMode = document.querySelector(".editMode")
-const editButton = document.querySelector(".editButton")
-const logStatus = document.querySelector(".logStatus")
 const modal1 = document.querySelector(".modal1")
 const modal2 = document.querySelector(".modal2")
 let modal = null
 const focusableSelector = "input, a, textarena, button"
 let focusables = []
+let token = localStorage.getItem("token")
 
-function afficherEditMode() {
-    editMode.style.display = "flex";
-    editButton.style.display = "flex";
-    logStatus.innerHTML = "logout"
-}
 
-afficherEditMode();
+// Fonction d'ouverture de la modale 1
 
 const openModal = function (e) {
     e.preventDefault()
@@ -29,6 +22,8 @@ const openModal = function (e) {
     modal.querySelector('.js-modal-stop').addEventListener("click", stopPropagation)
 }
 
+// Fonction de fermeture de la modale 1
+
 const closeModal = function (e) {
     if (modal === null) return
     e.preventDefault()
@@ -39,9 +34,13 @@ const closeModal = function (e) {
     modal = null
 }
 
+// Fonction empechant la propagation d'un evenement
+
 const stopPropagation = function (e) {
     e.stopPropagation()
 }
+
+// Fonction changeant le comportement du focus dans la fênetre modale
 
 const focusInModal = function (e) {
     e.preventDefault()
@@ -60,9 +59,13 @@ const focusInModal = function (e) {
     focusables[index].focus()
 }
 
+// Boucle ajoutant un event listener à chaque js-modal pour ouvrir la fenetre modale cible
+
 document.querySelectorAll(".js-modal").forEach(a => {
     a.addEventListener("click", openModal)
 })
+
+// Ajout d'un event listener pour pouvoir quitter la fenetre modale avec Echap
 
 window.addEventListener("keydown", function (e) {
     if (e.key === "Escape" || e.key === "Esc") {
@@ -73,6 +76,7 @@ window.addEventListener("keydown", function (e) {
     }
 })
 
+// Fonction d'affichage des Works dans la fenetre modale 1
 
 function afficherWorksModal(works) {
     // Récupération de l'élément du DOM qui accueillera les images
@@ -85,10 +89,12 @@ function afficherWorksModal(works) {
         // Création des balises 
         const img = document.createElement("img");
         img.src = worksObject.imageUrl;
+        img.id = worksObject.id
 
         // Ajout de l'icone remove
         const trashIcon = document.createElement("i");
         trashIcon.classList = "fa-regular fa-trash-can";
+        trashIcon.id = worksObject.id;
         figure.appendChild(trashIcon);
 
         // On rattache la balise figure a la pictureModifier
@@ -100,41 +106,42 @@ function afficherWorksModal(works) {
     }
 }
 
+// Event Listener pour les icones de suppressions
+
 function trashListener() {
     const trashIcons = document.querySelectorAll(".fa-trash-can")
 
-    for (let i = 0; i > deletePic.length; i++) {
-        trashIcons[i].addEventListener("click", deletePic())
+    for (let i = 0; i > trashIcons.length; i++) {
+        trashIcons[i].addEventListener("click", deletePic(id))
     }
 }
+trashListener()
+
+// Fonction de suppression des photos
 
 function deletePic() {
-    //Création de la charge utile du login
-
-    const id = i;
-
-    // Envoie des données à l'API
-
-    fetch('http://localhost:5678/api/works/', {
+    fetch("http://localhost:5678/api/works/" + id, {
         method: "DELETE",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(id)
+        headers: { Authorization: `Bearer ${token}`},
     })
-        // Redirection vers la page index.html si la reponse est le code 200
-        .then((response) => {
-            if (response === 401) {
-                alert("Action non autorisé, veuillez vous connecter en tant qu'administrateur");
-                throw new Error("Action non autorisé, veuillez vous connecter en tant qu'administrateur");
-            } else if (response === 500) {
-                alert("Action non reconnue");
-                throw new Error("Action non reconnue");
-            } else if (response.ok == true) {
 
-            }
-            // On transforme la promesse du serv en format JSON
-            return response.json();
-        })
+    .then (response => {
+        // Si la réponse = 200
+        if (response.ok == true) {
+            afficherWorksModal(works)
+        }
+        // Sinon afficher un message d'erreur
+        else {
+            alert("Vous n'êtes pas autorisé à supprimer ce projet, merci de vous connecter avec un compte administrateur")
+            window.location.href = "login.html";
+        }
+    })
+    .catch (error => {
+        console.log(error)
+    })
 }
+
+// Fonction pour passer de la fenetre modale 1 à 2 avec un event listener
 
 function listenAddPic () {
     const addPic = document.querySelector(".addPic")
@@ -144,6 +151,8 @@ function listenAddPic () {
     });
 }
 
+// Fonction pour passer de la fenetre modale 2 à 1 avec un event listener
+
 function listenArrowLeft() {
     const arrowLeft = document.querySelector('.fa-arrow-left');
     arrowLeft.addEventListener('click', function (e) {
@@ -152,13 +161,8 @@ function listenArrowLeft() {
     });
 }
 
-function showModal2() {
-    const modal2 = document.querySelector('.modal2');
-    const modal1 = document.querySelector('.modal1');
-    listenArrowLeft();
-    modal2.style.display = "flex";
-    modal1.style.display = 'none';
-}
+
+// Fonction pour afficher la fenetre modale 1
 
 function showModal1() {
     const modal2 = document.querySelector('.modal2');
@@ -168,6 +172,19 @@ function showModal1() {
     modal1.style.display = "flex";
 }
 
+// Fonction pour afficher la fenetre modale 2
+
+function showModal2() {
+    const modal2 = document.querySelector('.modal2');
+    const modal1 = document.querySelector('.modal1');
+    listenArrowLeft();
+    modal2.style.display = "flex";
+    modal1.style.display = 'none';
+    listenModal2Xmark ()
+}
+
+
 
 afficherWorksModal(works)
 listenAddPic ()
+
