@@ -112,7 +112,7 @@ function trashListener() {
     const trashIcons = document.querySelectorAll(".fa-trash-can")
 
     for (let i = 0; i > trashIcons.length; i++) {
-        trashIcons[i].addEventListener("click", deletePic(id))
+        trashIcons[i].addEventListener("click", deletePic())
     }
 }
 trashListener()
@@ -180,9 +180,7 @@ function showModal2() {
     listenArrowLeft();
     modal2.style.display = "flex";
     modal1.style.display = 'none';
-    listenModal2Xmark ()
 }
-
 
 
 afficherWorksModal(works)

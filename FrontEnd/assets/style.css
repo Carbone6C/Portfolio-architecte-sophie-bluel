@@ -371,6 +371,7 @@ footer nav ul {
 
 .modal-wrapper {
 	width: 630px;
+	height: 603px;
 	border-radius: 10px;
 	max-width: calc(100vh-20px);
 	max-height: calc(100vh-20px);
@@ -404,11 +405,15 @@ footer nav ul {
 	width: 79.13px;
 }
 
-.modal-wrapper .fa-xmark {
-	position: absolute;
-	top: 80px;
-	right: 440px;
+.modal-wrapper .js-modal-close {
+	position: relative;
+	bottom: 568px;
+	left: 290px;
 	cursor: pointer;
+}
+
+.modal-wrapper .js-modal-close2 {
+	bottom: 544px;
 }
 
 .modal-wrapper .importPhoto {

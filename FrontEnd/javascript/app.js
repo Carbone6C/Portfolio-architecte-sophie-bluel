@@ -2,7 +2,6 @@ let token = localStorage.getItem("token")
 const editMode = document.querySelector(".editMode")
 const editButton = document.querySelector(".editButton")
 const logStatus = document.querySelector(".logStatus")
-let loginStatusValue = logStatus.innerHTML
 
 
 // Fonction d'affichage du mode edit
@@ -11,7 +10,7 @@ function afficherEditMode() {
     if (token != null) {
         editMode.style.display = "flex";
         editButton.style.display = "flex";
-        loginStatusValue = "logout"
+        logStatus.innerHTML = "logout"
     } else {
         userLogOut()
     }
@@ -20,8 +19,8 @@ function afficherEditMode() {
 // Fonction de deconnexion de l'utilisateur
 
 function userLogOut() {
-    loginStatusValue = 'login';
-    localStorage.clear();
+    logStatus.innerHTML = 'login';
+    localStorage.removeItem("token");
     hideEditPage();
 }
 
@@ -36,5 +35,13 @@ function hideEditPage() {
         }
     }
 }
+
+// Event listener du bouton logout
+
+logStatus.addEventListener("click", function () {
+    if (token != null) {
+        userLogOut()
+    }
+})
 
 afficherEditMode()
