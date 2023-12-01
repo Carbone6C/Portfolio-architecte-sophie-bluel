@@ -7,6 +7,8 @@ function afficherWorks(works) {
 
     // Récupération de l'élément du DOM qui accueillera les images
     const gallery = document.querySelector(".gallery");
+    document.querySelector(".gallery").innerHTML = "";
+    
     for (let i = 0; i < works.length; i++) {
 
         const worksObject = works[i];
@@ -134,12 +136,4 @@ afficherWorks(works);
 afficherTous();
 creerFiltre(works)
 changeFilterBackground()  
-
-
-
-
-
-
-
-
 

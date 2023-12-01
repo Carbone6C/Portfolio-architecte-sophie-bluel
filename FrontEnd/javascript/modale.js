@@ -76,11 +76,18 @@ window.addEventListener("keydown", function (e) {
     }
 })
 
+async function updateWorks() {
+    reponseWorks = await fetch('http://localhost:5678/api/works');
+    works = await reponseWorks.json();
+}
+
 // Fonction d'affichage des Works dans la fenetre modale 1
 
-function afficherWorksModal(works) {
+function afficherWorksModal() {
     // Récupération de l'élément du DOM qui accueillera les images
     const pictureModifier = document.querySelector(".pictureModifier");
+    pictureModifier.innerHTML = '';
+
     for (let i = 0; i < works.length; i++) {
 
         const worksObject = works[i];
@@ -103,44 +110,53 @@ function afficherWorksModal(works) {
 
         // On rattache l'ensemble de l'image à la figure
         figure.appendChild(img);
+
+        //Ajout d'un Event Listener pour les trashIcons
+        trashIcon.addEventListener("click", function (e) {
+            e.preventDefault()
+            deletePic(worksObject.id)
+        })
     }
 }
 
-// Event Listener pour les icones de suppressions
-
-function trashListener() {
-    const trashIcons = document.querySelectorAll(".fa-trash-can")
-
-    for (let i = 0; i > trashIcons.length; i++) {
-        trashIcons[i].addEventListener("click", deletePic())
-    }
-}
-trashListener()
+afficherWorksModal(works)
 
 // Fonction de suppression des photos
 
-function deletePic() {
+function deletePic(id, works) {
+    const token = localStorage.getItem("token");
     fetch("http://localhost:5678/api/works/" + id, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}`},
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
     })
-
-    .then (response => {
-        // Si la réponse = 200
-        if (response.ok == true) {
-            afficherWorksModal(works)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error! Status: ${response.status}`);
         }
-        // Sinon afficher un message d'erreur
-        else {
-            alert("Vous n'êtes pas autorisé à supprimer ce projet, merci de vous connecter avec un compte administrateur")
-            window.location.href = "login.html";
+        if (response.status === 204) {
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data !== null) {
+            console.log("Data:", data);
+        } else {
+            refreshWorks (works)
         }
     })
-    .catch (error => {
-        console.log(error)
-    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
 }
 
+function refreshWorks (works) {
+    updateWorks()
+    afficherWorksModal(works);
+}
 // Fonction pour passer de la fenetre modale 1 à 2 avec un event listener
 
 function listenAddPic () {
@@ -150,6 +166,8 @@ function listenAddPic () {
         showModal2();
     });
 }
+
+listenAddPic ()
 
 // Fonction pour passer de la fenetre modale 2 à 1 avec un event listener
 
@@ -182,7 +200,14 @@ function showModal2() {
     modal1.style.display = 'none';
 }
 
+function acceptForm () {
+    const picture = document.getElementById("addPic")
+    const titre = document.getElementById("photoTitle")
+    const photoCat = document.getElementById("photoCat")
+    const envoiPhoto = document.getElementById("envoiPhoto")
+    if (picture != null && titre != null && photoCat != null) {
+        envoiPhoto.disabled = false
+    }
+}
 
-afficherWorksModal(works)
-listenAddPic ()
-
+acceptForm () 
