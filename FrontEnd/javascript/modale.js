@@ -11,8 +11,10 @@ let token = localStorage.getItem("token")
 // Fonction d'ouverture de la modale 1
 
 const openModal = function (e) {
-    e.preventDefault()
-    const target = document.querySelector(e.target.getAttribute("href"))
+    e.preventDefault();
+    console.log("openModal - href:", e.target.getAttribute("href")); // Log pour vérifier le href
+    const target = document.querySelector(e.target.getAttribute("href"));
+    console.log("openModal - target:", target);
     focusables = Array.from(target.querySelectorAll(focusableSelector))
     target.style.display = "flex"
     target.removeAttribute('aria-hidden')
@@ -116,42 +118,47 @@ function afficherWorksModal() {
             e.preventDefault()
             deletePic(worksObject.id)
         })
+        console.log("afficherWorksModal - Creating trash icon for ID:", worksObject.id);
     }
 }
 
 afficherWorksModal(works)
 
+
 // Fonction de suppression des photos
 
-function deletePic(id, works) {
+async function deletePic(id) {
+    console.log("deletePic - ID:", id);
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5678/api/works/" + id, {
-        method: "DELETE",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-    })
-    .then(response => {
+    try {
+        const response = await fetch("http://localhost:5678/api/works/" + id, {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+        });
+
         if (!response.ok) {
             throw new Error(`Error! Status: ${response.status}`);
         }
-        if (response.status === 204) {
-            return null;
+
+        // Retirer l'élément du DOM si la suppression est réussie
+        const elementToRemove = document.getElementById(id);
+        console.log("deletePic - elementToRemove:", elementToRemove);
+        if (elementToRemove) {
+            elementToRemove.parentElement.remove(); // Supprime la figure entière
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data !== null) {
-            console.log("Data:", data);
-        } else {
-            refreshWorks (works)
-        }
-    })
-    .catch(error => {
+
+        // mettre à jour les données (optionnel si la suppression visuelle est suffisante)
+        await updateWorks();
+        afficherWorksModal(); // pas besoin de passer 'works' car il est déjà à jour
+
+    } catch (error) {
         console.error("Error:", error);
-    });
+    }
 }
+
 
 function refreshWorks (works) {
     updateWorks()
@@ -211,3 +218,57 @@ function acceptForm () {
 }
 
 acceptForm () 
+
+async function sendPicture (event) {
+
+    // Empêche le rechargement de la page
+    event.preventDefault();
+
+    //Création de la charge utile du POST
+    
+    let token = sessionStorage.getItem("token");
+    const fichierPhoto = document.getElementById("addPhoto").files[0];
+    const chargeUtile = new FormData();
+    chargeUtile.append("image", fichierPhoto);
+    chargeUtile.append("title", document.getElementById("photoTitle").value);
+    chargeUtile.append(
+        "category",
+        parseInt(document.getElementById("photoCat").value)
+    );
+    // Envoie des données à l'API
+
+    await fetch('http://localhost:5678/api/works', {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(chargeUtile)
+    });
+    if (response.ok) {
+        //Si la réponse est 2xx, renvoyer la réponse au format json
+        return response.json();
+      } else if (response.status === 400) {
+        alert("Mauvaise requête");
+      } else if (response.status === 401) {
+        alert("Vous n'êtes pas autorisé à faire cela");
+      } else if (response.status === 500) {
+        alert("Erreur");
+      }
+}
+
+function getWorksCategories(works) {
+    const filterCat = [];
+
+    for (let i = 0; i < works.length; i++) {
+      const work = works[i];
+      if (!filterCat.includes(work.category.name)) {
+        filterCat.push(work.category.name);
+      };
+    }
+    let categories = document.getElementById("categories")
+    categories.value = filterCat
+}
+getWorksCategories(works)
+const photoForm = document.getElementById("photoForm") 
+photoForm.addEventListener("submit", sendPicture)
