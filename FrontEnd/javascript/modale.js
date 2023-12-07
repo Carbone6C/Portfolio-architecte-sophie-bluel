@@ -207,57 +207,55 @@ function showModal2() {
     modal1.style.display = 'none';
 }
 
-function acceptForm () {
-    const picture = document.getElementById("addPic")
-    const titre = document.getElementById("photoTitle")
-    const photoCat = document.getElementById("photoCat")
-    const envoiPhoto = document.getElementById("envoiPhoto")
-    if (picture != null && titre != null && photoCat != null) {
-        envoiPhoto.disabled = false
-    }
-}
-
-acceptForm () 
-
-async function sendPicture (event) {
-
-    // Empêche le rechargement de la page
+function sendPicture(event) {
     event.preventDefault();
 
-    //Création de la charge utile du POST
-    
-    let token = sessionStorage.getItem("token");
+    let token = localStorage.getItem("token");
+    console.log("Token:", token);
     const fichierPhoto = document.getElementById("addPhoto").files[0];
+    if (!fichierPhoto) {
+        alert("Aucun fichier sélectionné.");
+        return;
+    }
+
     const chargeUtile = new FormData();
     chargeUtile.append("image", fichierPhoto);
     chargeUtile.append("title", document.getElementById("photoTitle").value);
-    chargeUtile.append(
-        "category",
-        parseInt(document.getElementById("photoCat").value)
-    );
-    // Envoie des données à l'API
+    chargeUtile.append("category", parseInt(document.getElementById("photoCat").options[document.getElementById("photoCat").selectedIndex].value));
+    console.log(chargeUtile)
 
-    await fetch('http://localhost:5678/api/works', {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(chargeUtile)
-    });
-    if (response.ok) {
-        //Si la réponse est 2xx, renvoyer la réponse au format json
-        return response.json();
-      } else if (response.status === 400) {
-        alert("Mauvaise requête");
-      } else if (response.status === 401) {
-        alert("Vous n'êtes pas autorisé à faire cela");
-      } else if (response.status === 500) {
-        alert("Erreur");
-      }
+    try {
+        const response = fetch('http://localhost:5678/api/works', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: chargeUtile
+        });
+
+        if (response.ok) {
+            const responseData = response.json();
+            console.log("Réponse:", responseData);
+            // Gérez ici la mise à jour de l'interface utilisateur après l'envoi réussi
+        } else {
+            // Gestion des différentes réponses d'erreur
+            if (response.status === 400) {
+                alert("Mauvaise requête");
+            } else if (response.status === 401) {
+                alert("Vous n'êtes pas autorisé à faire cela");
+            } else if (response.status === 500) {
+                alert("Erreur serveur");
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors de l'envoi:", error);
+    }
 }
 
 function getWorksCategories(works) {
+    // Création d'un Array pour lister les catégories
+
     const filterCat = [];
 
     for (let i = 0; i < works.length; i++) {
@@ -265,10 +263,24 @@ function getWorksCategories(works) {
       if (!filterCat.includes(work.category.name)) {
         filterCat.push(work.category.name);
       };
+    } 
+
+    // Création des options dédiées au modale 2, attributions des valeurs et ID.
+
+    const categories = document.getElementById("photoCat")
+
+    for (let i = 0; i < filterCat.length; i++) {
+        const option = document.createElement("option");
+        option.innerHTML = filterCat[i];
+        option.value = filterCat[i];
+        option.id = i + 1;
+
+        // On rattache les options à la div de tous filtres
+
+        categories.appendChild(option);
     }
-    let categories = document.getElementById("categories")
-    categories.value = filterCat
 }
+
 getWorksCategories(works)
 const photoForm = document.getElementById("photoForm") 
 photoForm.addEventListener("submit", sendPicture)

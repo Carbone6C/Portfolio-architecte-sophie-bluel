@@ -32,28 +32,28 @@
 	</div>
 </aside>
 <aside id="modal2" class="modal modal2" aria-hidden="true" role="dialog" >
-	<div class="modal-wrapper js-modal-stop">
-		<p>Ajout photo</p>
-		<form id="photoForm" action="" method="POST">
-			<div class="importPhoto">
-				<i class="fa-regular fa-image"></i>
-				<label for="addPhoto">+ Ajouter photo</label>
-				<input type="file" id="addPhoto">
-				<p>jpg, png: 4mo max</p>
-			</div>
-			<div class="photoInfo">
-				<label for="photoTitle">Titre</label><br>
-				<input type="text" id="photoTitle">
-				<label for="photoCat">Catégorie</label><br>
-				<input list="categories" id="photoCat">
-				<datalist id="categories">	
-				</datalist>
-			</div>
-			<input type="submit" id="envoiPhoto" value="Valider" disabled>
-		</form>
-		<i class="fas fa-arrow-left"></i>
-		<i class="fa-solid fa-xmark js-modal-close js-modal-close2"></i>
-	</div>
+    <div class="modal-wrapper js-modal-stop">
+        <p>Ajout photo</p>
+        <form id="photoForm" action="" method="post">
+            <div class="importPhoto">
+                <i class="fa-regular fa-image"></i>
+                <label for="addPhoto">+ Ajouter photo</label>
+                <input type="file" id="addPhoto" accept="image/png, image/jpeg">
+                <p>jpg, png: 4mo max</p>
+            </div>
+            <div class="photoInfo">
+                <label for="photoTitle">Titre</label><br>
+                <input type="text" id="photoTitle">
+                <label for="photoCat">Catégorie</label><br>
+                <select name="categories" id="photoCat">
+					<option value=""></option>
+				</select>
+            </div>
+            <input type="submit" id="envoiPhoto" value="Valider">
+        </form>
+        <i class="fas fa-arrow-left"></i>
+        <i class="fa-solid fa-xmark js-modal-close js-modal-close2"></i>
+    </div>
 </aside>
 <div class="main-container">
 	<header>
