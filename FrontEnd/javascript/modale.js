@@ -207,7 +207,7 @@ function showModal2() {
     modal1.style.display = 'none';
 }
 
-function sendPicture(event) {
+async function sendPicture(event) {
     event.preventDefault();
 
     let token = localStorage.getItem("token");
@@ -221,21 +221,20 @@ function sendPicture(event) {
     const chargeUtile = new FormData();
     chargeUtile.append("image", fichierPhoto);
     chargeUtile.append("title", document.getElementById("photoTitle").value);
-    chargeUtile.append("category", parseInt(document.getElementById("photoCat").options[document.getElementById("photoCat").selectedIndex].value));
-    console.log(chargeUtile)
+    chargeUtile.append("category", parseInt(document.getElementById("photoCat").value));
 
     try {
-        const response = fetch('http://localhost:5678/api/works', {
+        const response = await fetch('http://localhost:5678/api/works', {
             method: "POST",
             headers: {
                 "Accept": "application/json",
-                "Authorization": `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: chargeUtile
         });
 
         if (response.ok) {
-            const responseData = response.json();
+            const responseData = await response.json();
             console.log("Réponse:", responseData);
             // Gérez ici la mise à jour de l'interface utilisateur après l'envoi réussi
         } else {
@@ -272,9 +271,8 @@ function getWorksCategories(works) {
     for (let i = 0; i < filterCat.length; i++) {
         const option = document.createElement("option");
         option.innerHTML = filterCat[i];
-        option.value = filterCat[i];
-        option.id = i + 1;
-
+        option.value = i + 1;
+        
         // On rattache les options à la div de tous filtres
 
         categories.appendChild(option);
