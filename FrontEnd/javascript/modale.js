@@ -222,6 +222,7 @@ async function sendPicture(event) {
     chargeUtile.append("image", fichierPhoto);
     chargeUtile.append("title", document.getElementById("photoTitle").value);
     chargeUtile.append("category", parseInt(document.getElementById("photoCat").value));
+    console.log(fichierPhoto)
 
     try {
         const response = await fetch('http://localhost:5678/api/works', {
@@ -272,7 +273,7 @@ function getWorksCategories(works) {
         const option = document.createElement("option");
         option.innerHTML = filterCat[i];
         option.value = i + 1;
-        
+
         // On rattache les options à la div de tous filtres
 
         categories.appendChild(option);
@@ -282,3 +283,30 @@ function getWorksCategories(works) {
 getWorksCategories(works)
 const photoForm = document.getElementById("photoForm") 
 photoForm.addEventListener("submit", sendPicture)
+
+function loadPicture () {
+    const fichierPhoto = document.getElementById("addPhoto").files[0];
+    const importPhoto = document.getElementsByClassName("importPhoto");
+    const displayPhoto = document.getElementsByClassName("displayPhoto")
+    if (fichierPhoto) {
+        importPhoto[0].style.display = "none"
+        displayPhoto[0].style.display = "flex"
+        const createPhoto = document.createElement("img")
+        const reader = new FileReader()
+        reader.onload = function(e) {
+            createPhoto.src = e.target.result;
+            displayPhoto[0].appendChild(createPhoto)
+        }
+        reader.readAsDataURL(fichierPhoto);
+    } else {
+        importPhoto[0].style.display = "flex"
+        displayPhoto[0].style.display = "none"
+        const existingPhoto = displayPhoto[0].querySelector("img");
+        if (existingPhoto) {
+            existingPhoto.remove();
+        }
+    }
+}
+
+const addPhoto = document.getElementById("addPhoto")
+addPhoto.addEventListener("change", loadPicture)
