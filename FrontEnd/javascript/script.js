@@ -137,3 +137,4 @@ afficherTous();
 creerFiltre(works)
 changeFilterBackground()  
 
+export {afficherWorks} 

@@ -1,3 +1,4 @@
+import { afficherWorks } from "./script.js"
 let reponseWorks = await fetch('http://localhost:5678/api/works');
 let works = await reponseWorks.json();
 const modal1 = document.querySelector(".modal1")
@@ -104,6 +105,11 @@ function afficherWorksModal() {
         const trashIcon = document.createElement("i");
         trashIcon.classList = "fa-regular fa-trash-can";
         trashIcon.id = worksObject.id;
+        // On rattache l'ensemble de l'image à la figure
+        figure.appendChild(img);
+
+        // On rattache l'icone à la figure
+
         figure.appendChild(trashIcon);
 
         // On rattache la balise figure a la pictureModifier
@@ -118,8 +124,11 @@ function afficherWorksModal() {
             e.preventDefault()
             deletePic(worksObject.id)
         })
+        
         console.log("afficherWorksModal - Creating trash icon for ID:", worksObject.id);
+        afficherWorks(works)
     }
+    afficherWorks(works)
 }
 
 afficherWorksModal(works)
@@ -139,10 +148,6 @@ async function deletePic(id) {
             },
         });
 
-        if (!response.ok) {
-            throw new Error(`Error! Status: ${response.status}`);
-        }
-
         // Retirer l'élément du DOM si la suppression est réussie
         const elementToRemove = document.getElementById(id);
         console.log("deletePic - elementToRemove:", elementToRemove);
@@ -150,19 +155,23 @@ async function deletePic(id) {
             elementToRemove.parentElement.remove(); // Supprime la figure entière
         }
 
-        // mettre à jour les données (optionnel si la suppression visuelle est suffisante)
-        await updateWorks();
-        afficherWorksModal(); // pas besoin de passer 'works' car il est déjà à jour
+        if (response.ok) {
+            afficherWorks(works)
+        } else { 
+            throw new Error(`Error! Status: ${response.status}`);
+        }
 
+        // mettre à jour les données (optionnel si la suppression visuelle est suffisante)
     } catch (error) {
         console.error("Error:", error);
     }
+    refreshWorks()
 }
 
 
-function refreshWorks (works) {
-    updateWorks()
-    afficherWorksModal(works);
+async function refreshWorks () {
+    await updateWorks()
+    afficherWorksModal();
 }
 // Fonction pour passer de la fenetre modale 1 à 2 avec un event listener
 
@@ -195,6 +204,8 @@ function showModal1() {
   
     modal2.style.display = 'none';
     modal1.style.display = "flex";
+    modal2.style.zIndex = 0
+    modal1.style.zIndex = 10
 }
 
 // Fonction pour afficher la fenetre modale 2
@@ -205,19 +216,27 @@ function showModal2() {
     listenArrowLeft();
     modal2.style.display = "flex";
     modal1.style.display = 'none';
+    modal2.style.zIndex = 10
+    modal1.style.zIndex = 0
 }
 
 async function sendPicture(event) {
+
+    // Empêche le comportement par défaut du formulaire
     event.preventDefault();
 
+    // Récupère le token  depuis le stockage local
     let token = localStorage.getItem("token");
     console.log("Token:", token);
+
     const fichierPhoto = document.getElementById("addPhoto").files[0];
+    // Affiche une alerte si aucun fichier n'est sélectionné
     if (!fichierPhoto) {
         alert("Aucun fichier sélectionné.");
         return;
     }
 
+    // Création d'un objet FormData pour contenir les données à envoyer
     const chargeUtile = new FormData();
     chargeUtile.append("image", fichierPhoto);
     chargeUtile.append("title", document.getElementById("photoTitle").value);
@@ -248,6 +267,7 @@ async function sendPicture(event) {
                 alert("Erreur serveur");
             }
         }
+        refreshWorks()
     } catch (error) {
         console.error("Erreur lors de l'envoi:", error);
     }
@@ -272,7 +292,7 @@ function getWorksCategories(works) {
     for (let i = 0; i < filterCat.length; i++) {
         const option = document.createElement("option");
         option.innerHTML = filterCat[i];
-        option.value = i + 1;
+        option.value = i;
 
         // On rattache les options à la div de tous filtres
 
@@ -285,23 +305,36 @@ const photoForm = document.getElementById("photoForm")
 photoForm.addEventListener("submit", sendPicture)
 
 function loadPicture () {
+
     const fichierPhoto = document.getElementById("addPhoto").files[0];
     const importPhoto = document.getElementsByClassName("importPhoto");
     const displayPhoto = document.getElementsByClassName("displayPhoto")
     if (fichierPhoto) {
+
+        // S'il y a un fichier sélectionné, masquez l'élément "importPhoto"
+        // et affichez l'élément "displayPhoto"
+
         importPhoto[0].style.display = "none"
         displayPhoto[0].style.display = "flex"
         const createPhoto = document.createElement("img")
         const reader = new FileReader()
         reader.onload = function(e) {
+
+            // Lorsque le fichier est chargé, ajout du .src de l'élément img
+
             createPhoto.src = e.target.result;
             displayPhoto[0].appendChild(createPhoto)
         }
+
+        // Lire le contenu du fichier sélectionné en tant qu'URL de données
+
         reader.readAsDataURL(fichierPhoto);
     } else {
+        // Si aucun fichier n'est sélectionné, affichez l'élément "importPhoto" et masquez l'élément "displayPhoto".
         importPhoto[0].style.display = "flex"
         displayPhoto[0].style.display = "none"
         const existingPhoto = displayPhoto[0].querySelector("img");
+        // Supprimez tout élément img existant.
         if (existingPhoto) {
             existingPhoto.remove();
         }
